@@ -6,11 +6,13 @@ export type Memory = {
   date: string;
   favorite: boolean;
   back_message: string | null;
+  timeline: boolean;
+  exact_date: boolean;
   created_at: string;
 };
 
 export const MEMORY_COLUMNS =
-  "id, url, storage_path, title, date, favorite, back_message, created_at";
+  "id, url, storage_path, title, date, favorite, back_message, timeline, exact_date, created_at";
 
 /** A small, deterministic hash so the same memory always gets the same
  * "organic" jitter -- no Math.random(), so server and client render
@@ -25,10 +27,11 @@ export function seededRandom(seed: string, salt = 0) {
   return (Math.abs(hash) % 1000) / 1000;
 }
 
-export function formatMemoryDate(date: string) {
-  return new Date(date + "T00:00:00").toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+export function formatMemoryDate(date: string, exact = true) {
+  return new Date(date + "T00:00:00").toLocaleDateString(
+    "en-US",
+    exact
+      ? { year: "numeric", month: "long", day: "numeric" }
+      : { year: "numeric", month: "long" },
+  );
 }

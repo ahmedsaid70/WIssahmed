@@ -268,7 +268,7 @@ export function RoomScene({
         href="/"
         className="mt-6 text-xs font-medium text-neutral-400 transition hover:text-rose-500 dark:text-neutral-500"
       >
-        Back to Us ♥
+        Back to Wissahmed ♥
       </Link>
 
       {/* floating music control */}

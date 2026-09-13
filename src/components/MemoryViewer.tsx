@@ -129,7 +129,7 @@ export function MemoryViewer({
         <div className="mt-5 w-full text-center text-white">
           <div className="flex items-center justify-center gap-2">
             <p className="text-xs font-medium tracking-wide text-white/60 uppercase">
-              {formatMemoryDate(memory.date)}
+              {formatMemoryDate(memory.date, memory.exact_date)}
             </p>
             <button
               onClick={handleFavorite}

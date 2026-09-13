@@ -22,8 +22,7 @@ export function TimelineList({ entries }: { entries: Memory[] }) {
           <motion.div
             key={entry.id}
             initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.6 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
             className="flex w-60 shrink-0 snap-center flex-col items-center text-center"
           >
@@ -44,7 +43,7 @@ export function TimelineList({ entries }: { entries: Memory[] }) {
 
               <div className="p-3">
                 <p className="text-[11px] font-medium tracking-wide text-rose-500 uppercase dark:text-rose-400">
-                  {formatMemoryDate(entry.date)}
+                  {formatMemoryDate(entry.date, entry.exact_date)}
                 </p>
                 <h3 className="mt-0.5 text-sm font-semibold">
                   {entry.title || "Untitled memory"}

@@ -19,8 +19,12 @@ export async function addMemory(formData: FormData) {
 
   const file = formData.get("photo") as File | null;
   const title = String(formData.get("title") ?? "").trim();
-  const date = String(formData.get("date") ?? "").trim();
   const favorite = formData.get("favorite") === "on";
+  const timeline = formData.get("timeline") === "true";
+  const exactDate = formData.get("exact_date") !== "false";
+
+  let date = String(formData.get("date") ?? "").trim();
+  if (!exactDate && date) date = `${date}-01`;
 
   let url: string | null = null;
   let storagePath: string | null = null;
@@ -47,6 +51,8 @@ export async function addMemory(formData: FormData) {
     title: title || null,
     date: date || undefined,
     favorite,
+    timeline,
+    exact_date: exactDate,
     uploaded_by: user.email,
   });
 

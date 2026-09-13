@@ -9,6 +9,8 @@ export default async function GalleryPage() {
   const { data: memories } = await supabase
     .from("photos")
     .select(MEMORY_COLUMNS)
+    .not("url", "is", null)
+    .eq("timeline", false)
     .order("created_at", { ascending: false });
 
   return (

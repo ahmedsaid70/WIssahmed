@@ -19,7 +19,7 @@ export default function LoginPage() {
         className="m-auto w-full max-w-sm rounded-2xl border border-rose-200/60 bg-white/80 p-8 shadow-xl backdrop-blur-sm dark:border-neutral-800 dark:bg-neutral-900/80"
       >
         <h1 className="text-center text-2xl font-semibold text-rose-600 dark:text-rose-400">
-          Us ♥
+          Wissahmed ♥
         </h1>
         <p className="mt-1 text-center text-sm text-neutral-500 dark:text-neutral-400">
           Just for the two of us.

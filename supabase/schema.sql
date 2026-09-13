@@ -22,7 +22,9 @@ alter table photos
   add column if not exists location text,
   add column if not exists category text,
   add column if not exists favorite boolean not null default false,
-  add column if not exists back_message text;
+  add column if not exists back_message text,
+  add column if not exists timeline boolean not null default false,
+  add column if not exists exact_date boolean not null default true;
 
 -- storage_path/url used to be required -- drop that constraint now that a
 -- memory can be text-only (safe to re-run).

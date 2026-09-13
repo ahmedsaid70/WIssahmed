@@ -9,6 +9,7 @@ export default async function TimelinePage() {
   const { data: memories } = await supabase
     .from("photos")
     .select(MEMORY_COLUMNS)
+    .eq("timeline", true)
     .order("date", { ascending: true });
 
   return (
@@ -22,7 +23,7 @@ export default async function TimelinePage() {
         </p>
 
         <AddDialog trigger="Add event" title="Add a memory">
-          <MemoryForm />
+          <MemoryForm isTimeline />
         </AddDialog>
       </div>
 

@@ -11,6 +11,7 @@ const links = [
   { href: "/gallery", label: "Gallery", icon: ImageIcon },
   { href: "/timeline", label: "Timeline", icon: Clock },
   { href: "/guestbook", label: "Notes", icon: MessageCircle },
+  { href: "/wissam", label: "Wissam", icon: "👧" },
 ];
 
 export function NavBar() {
@@ -51,14 +52,18 @@ export function NavBar() {
                       transition={{ type: "spring", stiffness: 500, damping: 32 }}
                     />
                   )}
-                  <Icon
-                    className={`relative h-5 w-5 transition-colors ${
-                      isActive
-                        ? "text-white"
-                        : "text-neutral-500 dark:text-neutral-400"
-                    }`}
-                    strokeWidth={2}
-                  />
+                  {typeof Icon === "string" ? (
+                    <span className="relative text-base leading-none">{Icon}</span>
+                  ) : (
+                    <Icon
+                      className={`relative h-5 w-5 transition-colors ${
+                        isActive
+                          ? "text-white"
+                          : "text-neutral-500 dark:text-neutral-400"
+                      }`}
+                      strokeWidth={2}
+                    />
+                  )}
                 </Link>
               </li>
             );

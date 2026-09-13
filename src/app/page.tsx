@@ -1,13 +1,12 @@
 import { Countdown } from "@/components/Countdown";
 import { WissamiIntro } from "@/components/WissamiIntro";
+import { SiteTitle } from "@/components/SiteTitle";
 import { relationshipStartDate, herBirthday } from "@/lib/config";
 
 export default function Home() {
   return (
     <main className="flex min-h-full flex-1 flex-col items-center bg-gradient-to-b from-rose-50 to-white px-4 py-5 text-center dark:from-neutral-950 dark:to-neutral-950">
-      <h1 className="text-3xl font-bold text-rose-600 sm:text-4xl dark:text-rose-400">
-        Us ♥
-      </h1>
+      <SiteTitle />
       <p className="mt-1.5 max-w-sm text-neutral-500 dark:text-neutral-400">
         Every photo, memory, and note, in one place.
       </p>

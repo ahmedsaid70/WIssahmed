@@ -41,7 +41,7 @@ function MemoryCard({
       className={`group relative flex flex-col items-center rounded-sm bg-white p-2.5 pb-5 text-left shadow-md transition-shadow hover:z-10 hover:shadow-2xl focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:outline-none dark:bg-neutral-100 ${
         isFeatured ? "row-span-2" : ""
       }`}
-      aria-label={`Open memory: ${memory.title || formatMemoryDate(memory.date)}`}
+      aria-label={`Open memory: ${memory.title || formatMemoryDate(memory.date, memory.exact_date)}`}
     >
       {memory.favorite && (
         <span className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-yellow-400 text-white shadow">
@@ -65,7 +65,7 @@ function MemoryCard({
         )}
       </div>
       <span className="mt-2 line-clamp-1 max-w-full text-center font-serif text-xs text-neutral-500 italic opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-        {memory.title || formatMemoryDate(memory.date)}
+        {memory.title || formatMemoryDate(memory.date, memory.exact_date)}
       </span>
     </motion.button>
   );

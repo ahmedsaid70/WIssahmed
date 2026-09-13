@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { addMemory } from "@/app/gallery/actions";
 import { FormStatusWatcher } from "@/components/FormStatusWatcher";
@@ -21,12 +22,15 @@ const inputClass =
   "mt-1 w-full rounded-lg border border-neutral-300 px-3 py-1.5 text-sm outline-none focus:border-rose-400 dark:border-neutral-700 dark:bg-neutral-800";
 const labelClass = "text-xs font-medium text-neutral-500";
 
-export function MemoryForm() {
+export function MemoryForm({ isTimeline = false }: { isTimeline?: boolean }) {
   const today = new Date().toISOString().slice(0, 10);
+  const [monthOnly, setMonthOnly] = useState(false);
 
   return (
     <form action={addMemory} className="flex flex-col gap-3">
       <FormStatusWatcher />
+      <input type="hidden" name="timeline" value={isTimeline ? "true" : "false"} />
+      <input type="hidden" name="exact_date" value={monthOnly ? "false" : "true"} />
 
       <div>
         <label htmlFor="photo" className={labelClass}>
@@ -44,16 +48,27 @@ export function MemoryForm() {
       <div className="flex flex-col gap-3 sm:flex-row">
         <div className="sm:w-40">
           <label htmlFor="date" className={labelClass}>
-            Date
+            {monthOnly ? "Month" : "Date"}
           </label>
-          <input
-            id="date"
-            name="date"
-            type="date"
-            defaultValue={today}
-            required
-            className={inputClass}
-          />
+          {monthOnly ? (
+            <input
+              id="date"
+              name="date"
+              type="month"
+              defaultValue={today.slice(0, 7)}
+              required
+              className={inputClass}
+            />
+          ) : (
+            <input
+              id="date"
+              name="date"
+              type="date"
+              defaultValue={today}
+              required
+              className={inputClass}
+            />
+          )}
         </div>
         <div className="flex-1">
           <label htmlFor="title" className={labelClass}>
@@ -68,6 +83,18 @@ export function MemoryForm() {
           />
         </div>
       </div>
+
+      {isTimeline && (
+        <label className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+          <input
+            type="checkbox"
+            checked={monthOnly}
+            onChange={(e) => setMonthOnly(e.target.checked)}
+            className="h-4 w-4 rounded border-neutral-300 text-rose-500 focus:ring-rose-400"
+          />
+          I only remember the month
+        </label>
+      )}
 
       <label className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
         <input
