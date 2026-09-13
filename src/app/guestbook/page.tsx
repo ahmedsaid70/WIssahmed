@@ -2,8 +2,10 @@ import { createClient } from "@/lib/supabase/server";
 import { GuestbookForm } from "@/components/GuestbookForm";
 import { GuestbookList } from "@/components/GuestbookList";
 import { AddDialog } from "@/components/AddDialog";
+import { logPageVisit } from "@/lib/tracking";
 
 export default async function GuestbookPage() {
+  await logPageVisit("Notes");
   const supabase = await createClient();
   const { data: messages } = await supabase
     .from("guestbook_messages")

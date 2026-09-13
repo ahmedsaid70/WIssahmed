@@ -3,8 +3,10 @@ import { TimelineList } from "@/components/TimelineList";
 import { MemoryForm } from "@/components/MemoryForm";
 import { AddDialog } from "@/components/AddDialog";
 import { MEMORY_COLUMNS, type Memory } from "@/lib/memory";
+import { logPageVisit } from "@/lib/tracking";
 
 export default async function TimelinePage() {
+  await logPageVisit("Timeline");
   const supabase = await createClient();
   const { data: memories } = await supabase
     .from("photos")

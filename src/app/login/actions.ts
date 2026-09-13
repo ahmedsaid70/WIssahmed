@@ -22,6 +22,8 @@ export async function login(
     return { error: "Wrong email or password." };
   }
 
+  await supabase.from("login_events").insert({ user_email: email });
+
   redirect("/");
 }
 

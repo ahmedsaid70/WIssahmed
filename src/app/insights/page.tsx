@@ -21,18 +21,36 @@ function StatCard({ label, value }: { label: string; value: number }) {
 
 export default async function InsightsPage() {
   const supabase = await createClient();
-  const [{ data: events }, { data: status }] = await Promise.all([
-    supabase
-      .from("proposal_events")
-      .select("id, event_type, created_at")
-      .order("created_at", { ascending: false }),
-    supabase.from("proposal_status").select("accepted, accepted_at").eq("id", true).maybeSingle(),
-  ]);
+  const [{ data: events }, { data: status }, { data: logins }, { data: visits }] =
+    await Promise.all([
+      supabase
+        .from("proposal_events")
+        .select("id, event_type, message, user_email, created_at")
+        .order("created_at", { ascending: false }),
+      supabase.from("proposal_status").select("accepted, accepted_at").eq("id", true).maybeSingle(),
+      supabase
+        .from("login_events")
+        .select("id, user_email, created_at")
+        .order("created_at", { ascending: false })
+        .limit(50),
+      supabase
+        .from("page_visits")
+        .select("id, message, user_email, created_at")
+        .order("created_at", { ascending: false })
+        .limit(50),
+    ]);
 
   const rows = events ?? [];
   const views = rows.filter((e) => e.event_type === "view").length;
   const yes = rows.filter((e) => e.event_type === "yes").length;
   const no = rows.filter((e) => e.event_type === "no").length;
+
+  const loginRows = logins ?? [];
+  const visitRows = visits ?? [];
+  const visitCounts = visitRows.reduce<Record<string, number>>((acc, v) => {
+    acc[v.message] = (acc[v.message] ?? 0) + 1;
+    return acc;
+  }, {});
 
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8">
@@ -66,6 +84,8 @@ export default async function InsightsPage() {
           <thead className="sticky top-0 bg-rose-50 text-xs text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400">
             <tr>
               <th className="px-4 py-2 font-medium">Event</th>
+              <th className="px-4 py-2 font-medium">Message</th>
+              <th className="px-4 py-2 font-medium">Who</th>
               <th className="px-4 py-2 font-medium">When</th>
             </tr>
           </thead>
@@ -80,6 +100,12 @@ export default async function InsightsPage() {
                       : "🙈 No"}
                 </td>
                 <td className="px-4 py-2 text-neutral-500 dark:text-neutral-400">
+                  {e.message ?? "—"}
+                </td>
+                <td className="px-4 py-2 text-neutral-500 dark:text-neutral-400">
+                  {e.user_email ?? "—"}
+                </td>
+                <td className="px-4 py-2 text-neutral-500 dark:text-neutral-400">
                   {formatTime(e.created_at)}
                 </td>
               </tr>
@@ -88,6 +114,76 @@ export default async function InsightsPage() {
         </table>
         {rows.length === 0 && (
           <p className="p-6 text-center text-sm text-neutral-400">No activity yet.</p>
+        )}
+      </div>
+
+      <h2 className="mt-10 text-lg font-semibold text-rose-600 dark:text-rose-400">
+        Page visits
+      </h2>
+      {Object.keys(visitCounts).length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {Object.entries(visitCounts)
+            .sort((a, b) => b[1] - a[1])
+            .map(([page, count]) => (
+              <span
+                key={page}
+                className="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-medium text-rose-600 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400"
+              >
+                {page} · {count}
+              </span>
+            ))}
+        </div>
+      )}
+      <div className="mt-4 max-h-[40vh] overflow-y-auto rounded-2xl border border-rose-100 dark:border-neutral-800">
+        <table className="w-full text-left text-sm">
+          <thead className="sticky top-0 bg-rose-50 text-xs text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400">
+            <tr>
+              <th className="px-4 py-2 font-medium">Page</th>
+              <th className="px-4 py-2 font-medium">Who</th>
+              <th className="px-4 py-2 font-medium">When</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-rose-100 dark:divide-neutral-800">
+            {visitRows.map((v) => (
+              <tr key={v.id}>
+                <td className="px-4 py-2">{v.message}</td>
+                <td className="px-4 py-2 text-neutral-500 dark:text-neutral-400">
+                  {v.user_email ?? "—"}
+                </td>
+                <td className="px-4 py-2 text-neutral-500 dark:text-neutral-400">
+                  {formatTime(v.created_at)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {visitRows.length === 0 && (
+          <p className="p-6 text-center text-sm text-neutral-400">No page visits yet.</p>
+        )}
+      </div>
+
+      <h2 className="mt-10 text-lg font-semibold text-rose-600 dark:text-rose-400">Logins</h2>
+      <div className="mt-4 max-h-[40vh] overflow-y-auto rounded-2xl border border-rose-100 dark:border-neutral-800">
+        <table className="w-full text-left text-sm">
+          <thead className="sticky top-0 bg-rose-50 text-xs text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400">
+            <tr>
+              <th className="px-4 py-2 font-medium">Email</th>
+              <th className="px-4 py-2 font-medium">When</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-rose-100 dark:divide-neutral-800">
+            {loginRows.map((l) => (
+              <tr key={l.id}>
+                <td className="px-4 py-2">{l.user_email ?? "—"}</td>
+                <td className="px-4 py-2 text-neutral-500 dark:text-neutral-400">
+                  {formatTime(l.created_at)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {loginRows.length === 0 && (
+          <p className="p-6 text-center text-sm text-neutral-400">No logins yet.</p>
         )}
       </div>
     </main>

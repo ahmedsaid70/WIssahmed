@@ -76,10 +76,35 @@ create table if not exists proposal_events (
   created_at timestamptz not null default now()
 );
 
+-- What exactly she saw/clicked (e.g. which "No" taunt was showing, or the
+-- final Yes label), so the log reads like a story instead of just counts.
+alter table proposal_events add column if not exists message text;
+
+-- Who was logged in when the event happened.
+alter table proposal_events add column if not exists user_email text;
+
+-- One row per successful login, so you can see who logged in and when.
+create table if not exists login_events (
+  id uuid primary key default gen_random_uuid(),
+  user_email text,
+  created_at timestamptz not null default now()
+);
+
+-- General page-visit log -- "message" holds the page name, kept generic so
+-- any page can log a visit without needing its own dedicated table.
+create table if not exists page_visits (
+  id uuid primary key default gen_random_uuid(),
+  message text not null,
+  user_email text,
+  created_at timestamptz not null default now()
+);
+
 alter table photos enable row level security;
 alter table guestbook_messages enable row level security;
 alter table proposal_status enable row level security;
 alter table proposal_events enable row level security;
+alter table login_events enable row level security;
+alter table page_visits enable row level security;
 
 -- Policies can't use "if not exists", so each one is dropped first --
 -- this makes the whole script safe to run again anytime (e.g. after
@@ -127,6 +152,22 @@ create policy "Authenticated users can read proposal events" on proposal_events
 
 drop policy if exists "Authenticated users can add proposal events" on proposal_events;
 create policy "Authenticated users can add proposal events" on proposal_events
+  for insert to authenticated with check (true);
+
+drop policy if exists "Authenticated users can read login events" on login_events;
+create policy "Authenticated users can read login events" on login_events
+  for select to authenticated using (true);
+
+drop policy if exists "Authenticated users can add login events" on login_events;
+create policy "Authenticated users can add login events" on login_events
+  for insert to authenticated with check (true);
+
+drop policy if exists "Authenticated users can read page visits" on page_visits;
+create policy "Authenticated users can read page visits" on page_visits
+  for select to authenticated using (true);
+
+drop policy if exists "Authenticated users can add page visits" on page_visits;
+create policy "Authenticated users can add page visits" on page_visits
   for insert to authenticated with check (true);
 
 -- Before running the policies below: go to Storage -> New bucket -> name it

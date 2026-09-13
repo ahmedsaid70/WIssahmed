@@ -2,8 +2,11 @@ import { Countdown } from "@/components/Countdown";
 import { WissamiIntro } from "@/components/WissamiIntro";
 import { SiteTitle } from "@/components/SiteTitle";
 import { relationshipStartDate, herBirthday } from "@/lib/config";
+import { logPageVisit } from "@/lib/tracking";
 
-export default function Home() {
+export default async function Home() {
+  await logPageVisit("Home");
+
   return (
     <main className="flex min-h-full flex-1 flex-col items-center bg-gradient-to-b from-rose-50 to-white px-4 py-5 text-center dark:from-neutral-950 dark:to-neutral-950">
       <SiteTitle />

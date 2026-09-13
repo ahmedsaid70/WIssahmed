@@ -1,7 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { RoomScene } from "@/components/RoomScene";
+import { logPageVisit } from "@/lib/tracking";
 
 export default async function RoomPage() {
+  await logPageVisit("Room");
   const supabase = await createClient();
 
   const [{ data: photos }, { data: messages }, { data: timelineEntries }] = await Promise.all([

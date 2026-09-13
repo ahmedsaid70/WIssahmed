@@ -113,9 +113,10 @@ export function Proposal({
     // current count, instead of a stale value captured in this closure.
     attemptsRef.current += 1;
     const attempt = attemptsRef.current;
+    const message = cfg.noMessages[(attempt - 1) % cfg.noMessages.length];
     setNoAttempts(attempt);
-    setNoMessage(cfg.noMessages[(attempt - 1) % cfg.noMessages.length]);
-    logNoClick().catch(() => {});
+    setNoMessage(message);
+    logNoClick(message).catch(() => {});
 
     if (attempt % 5 === 0) {
       if (labelTimeoutRef.current) clearTimeout(labelTimeoutRef.current);
@@ -179,10 +180,11 @@ export function Proposal({
 
   function handleYes() {
     setPhase("celebrating");
+    console.log("yeueueuueu")
     // Best-effort persistence -- the celebration must play out regardless
     // of whether this save succeeds (e.g. a network hiccup shouldn't be
     // able to swallow the emotional payoff).
-    acceptProposal().catch(() => {});
+    acceptProposal(cfg.yesLabel).catch(() => {});
     setTimeout(() => setPhase("final"), 5400);
   }
 

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { LoveLetterSlider } from "@/components/LoveLetterSlider";
+import { logPageVisit } from "@/lib/tracking";
 
 export default async function LetterPage() {
+  await logPageVisit("Letter");
   const supabase = await createClient();
   const { data: proposal } = await supabase
     .from("proposal_status")
@@ -10,7 +12,12 @@ export default async function LetterPage() {
     .eq("id", true)
     .maybeSingle();
 
-  await supabase.from("proposal_events").insert({ event_type: "view" });
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  await supabase
+    .from("proposal_events")
+    .insert({ event_type: "view", user_email: user?.email });
 
   return (
     <main className="relative flex min-h-full flex-1 flex-col items-center bg-gradient-to-b from-rose-50 via-white to-rose-50 px-6 py-10 dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-950">
