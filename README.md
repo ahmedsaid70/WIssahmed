@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Us
 
-## Getting Started
+A private website for the two of you: a photo gallery, a memory timeline, an
+anniversary countdown, and a notes/guestbook — both of you can log in and add
+things.
 
-First, run the development server:
+Built with Next.js, Tailwind CSS, and Framer Motion. Data, file storage, and
+login are handled by [Supabase](https://supabase.com) (free tier).
+
+## 1. Create a Supabase project
+
+1. Go to [supabase.com](https://supabase.com), sign up, and create a new project (free tier).
+2. In the dashboard, go to **SQL Editor -> New query**, paste the contents of
+   [`supabase/schema.sql`](supabase/schema.sql), and run it. This creates the
+   database tables and access rules.
+3. Go to **Storage -> New bucket**, name it exactly `photos`, and turn
+   **Public bucket** ON. (The schema.sql file above also adds the storage
+   access policies — run it after creating the bucket.)
+4. Go to **Authentication -> Users -> Add user**, and create two accounts:
+   one for you, one for your girlfriend (email + password each). These are
+   the only two accounts that will ever be able to log in — there's no public
+   sign-up.
+5. Go to **Project Settings -> API** and copy the **Project URL** and the
+   **anon public** key.
+
+## 2. Configure the app locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.local.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Paste in the Project URL and anon key from step 1.5, and set
+`NEXT_PUBLIC_RELATIONSHIP_START_DATE` to the date you got together
+(`YYYY-MM-DD`) — it drives the countdown on the home page.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 3. Run it locally
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project needs Node 18.18+ (a newer LTS is recommended). If `node -v`
+shows something older, run:
 
-## Learn More
+```bash
+nvm install --lts
+nvm use --lts
+```
 
-To learn more about Next.js, take a look at the following resources:
+Then:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm install
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open [http://localhost:3000](http://localhost:3000) and log in with either
+of the two accounts you created.
 
-## Deploy on Vercel
+## 4. Deploy for free
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push this project to a GitHub repo.
+2. Go to [vercel.com](https://vercel.com), sign up, and import the repo.
+3. In the Vercel project's **Settings -> Environment Variables**, add the
+   same three variables from `.env.local`.
+4. Deploy. Vercel gives you a free `.vercel.app` URL.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+That's it — $0/month for a personal site at this scale (Vercel Hobby +
+Supabase Free tier).
+
+## Notes
+
+- Photos are stored in a **public** Supabase Storage bucket, so anyone with
+  the exact photo URL could view it without logging in — the URLs aren't
+  linked from anywhere public, but they aren't secret either. This keeps
+  setup simple; if you want stricter privacy later, switch to signed URLs.
+- Both accounts have equal permissions: either of you can add or delete
+  photos, timeline entries, and notes.

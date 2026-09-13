@@ -3,6 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* Height of the floating bottom nav pill + its offset from the screen
+     edge + a little breathing room, so page content can size itself to
+     "viewport - nav" instead of the full viewport. */
+  --nav-height: 6rem;
 }
 
 @theme inline {
@@ -10,6 +14,22 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+/* Swap the "rose" palette used across the app for our brand color. */
+@theme {
+  --color-rose-50: #fff0f3;
+  --color-rose-100: #ffe0e7;
+  --color-rose-200: #ffbdca;
+  --color-rose-300: #ff859d;
+  --color-rose-400: #ff4d70;
+  --color-rose-500: #ff2652;
+  --color-rose-600: #d6002b;
+}
+
+button:not(:disabled),
+[role="button"] {
+  cursor: pointer;
 }
 
 @media (prefers-color-scheme: dark) {
